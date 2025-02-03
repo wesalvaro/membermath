@@ -23,84 +23,6 @@ class Berry(object):
     def __str__(self):
         return self.formula
 
-    def __add__(self, other):
-        from .binerry import Binerry
-
-        return Binerry(self, v(other), "+", lambda a, b: a + b)
-
-    def __sub__(self, other):
-        from .binerry import Binerry
-
-        return Binerry(self, v(other), "-", lambda a, b: a - b)
-
-    def __mul__(self, other):
-        from .binerry import Binerry
-
-        return Binerry(self, v(other), "×", lambda a, b: a * b, scaling=True)
-
-    def __truediv__(self, other):
-        from .binerry import Binerry
-
-        return Binerry(self, v(other), "/", lambda a, b: a / b, scaling=True)
-
-    def __floordiv__(self, other):
-        from .binerry import Binerry
-
-        return Binerry(self, v(other), "⫽", lambda a, b: a // b, scaling=True)
-
-    def __pow__(self, exp):
-        from .binerry import Binerry
-
-        return Binerry(self, v(exp), "**", lambda a, b: a**b, scaling=True)
-
-    def __floor__(self):
-        from .unerry import Unerry
-
-        return Unerry("floor", lambda x: floor(x.value), self, variety=self.variety)
-
-    def __round__(self, places=0):
-        from .unerry import Unerry
-
-        def r(a):
-            if places < 0:
-                mul = 10 ** abs(places)
-                return (floor(self / mul) * mul).value
-            else:
-                return round(self.value, places)
-
-        return Unerry(f"round⌊{places}⌋", r, self, variety=self.variety)
-
-    def __eq__(self, other):
-        return self.value == v(other).value
-
-    def __ne__(self, other):
-        return self.value != v(other).value
-
-    def __lt__(self, other):
-        return self.value < v(other).value
-
-    def __le__(self, other):
-        return self.value <= v(other).value
-
-    def __gt__(self, other):
-        return self.value > v(other).value
-
-    def __ge__(self, other):
-        return self.value >= v(other).value
-
-    def __matmul__(self, other: date):
-        from .bestbyberry import BestByBerry
-
-        assert isinstance(other, date)
-        return BestByBerry(self, other)
-
-    def __rshift__(self, other: "Variety"):
-        assert isinstance(other, Variety)
-        try:
-            return Variety.convert(self, other)
-        except Exception as e:
-            raise NotImplementedError(f"Can't convert {self} to {other}: {e}")
-
     def __format__(self, spec):
         variety = self.variety or Unknown
         return variety.format(self)
@@ -112,23 +34,22 @@ class Berry(object):
 
         if isinstance(x, Berry):
             if variety:
-                checkVariety(variety, x.variety)
+                checkVariety(x.variety, variety)
             if name == x.name:
                 return x
-            return Doppelberry(x, name=name) if name else x
+            b = Doppelberry(x, name=name) if name else x
         elif isinstance(x, tuple):
-            b, variety = x
-            if variety:
-                checkVariety(variety, variety)
-            return v(v, variety=variety)
+            b, variety_desc = x
+            if isinstance(variety_desc, Variety):
+                b = Berry.of(b, variety=variety_desc)
+            else:
+                b = Berry.of(b)
+                b.description = variety_desc
         elif isinstance(x, (str, Decimal, Number)):
-            return Seed(x, variety=variety, name=name)
+            b = Seed(x, variety=variety, name=name)
         else:
-            raise ValueError(f"Can't create V from {repr(x)}")
-
-
-def v(value, variety=None, name=""):
-    return Berry.of(value, variety=variety, name=name)
+            raise ValueError(f"Can't create Berry from {repr(x)}")
+        return b
 
 
 class Variety(object):
@@ -147,7 +68,7 @@ class Variety(object):
         self._day_based_rates = day_based_rates
 
     def rate(self, value):
-        return v(value, variety=self)
+        return Berry.of(value, variety=self)
 
     def format(self, value):
         return self._format(self, value)
@@ -204,7 +125,11 @@ def checkVariety(a: Variety, b: Variety, scaling_op=False):
     if scaling_op:
         assert b == a or not b or not a, f"Different varieties: {a} != {b}"
     else:
-        assert b == a, f"Different varieties: {b} != {a}"
+        assert b == a, f"Different varieties: {a} != {b}"
 
 
 Unknown = Variety("?", "?", lambda u, v: f"{round(v.value, 2):,}")
+
+
+def v(value, variety=None, name=""):
+    return Berry.of(value, variety=variety, name=name)

@@ -1,4 +1,4 @@
-from .berry import Berry, Variety
+from .berry import Berry
 
 
 class Bushel(object):
@@ -62,15 +62,13 @@ class Bushel(object):
             raise KeyError(
                 f"{name} already set: {self._values[name]}\nCannot set to {value}"
             )
-        nice_name = self._prefix + str(name)
-        if isinstance(value, tuple):
-            self._values[name] = _tupleBerry(value, name=nice_name)
-        elif callable(value):
+        if callable(value):
             from .callerry import Callerry
 
-            self._values[name] = Callerry(value, self, name=name, prefix=self._prefix)
+            b = Callerry(value, self, name=str(name), prefix=self._prefix)
         else:
-            self._values[name] = Berry.of(value, name=nice_name)
+            b = Berry.of(value, name=self._prefix + str(name))
+        self._values[name] = b
 
     def __getattr__(self, name) -> Berry:
         if name == "keys":
@@ -105,17 +103,3 @@ class _FreezeDriedBushel(Bushel):
 
     def __setattr__(self, name, value):
         raise NotImplementedError("Frozen!")
-
-
-def _tupleBerry(berry, name):
-    assert len(berry) == 2, f"Unsupported tuple size: {berry}"
-    v, variety_desc = berry
-    if isinstance(variety_desc, Variety):
-        variety = variety_desc
-        desc = ""
-    else:
-        variety = None
-        desc = variety_desc
-    v = Berry.of(v, variety=variety, name=name)
-    v.description = desc
-    return v

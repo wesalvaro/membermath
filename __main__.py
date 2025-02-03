@@ -70,7 +70,7 @@ fx.jpy = 1_5000, JPY
 try:
     fx.total = fx.usd + fx.jpy
 except Exception as e:
-    assert "Different varieties: ¥ != $" in str(e)
+    assert "Different varieties: $ != ¥" in str(e)
 fx.total_jpy = (fx.usd >> JPY) + fx.jpy
 fx.total_usd = fx.usd + (fx.jpy >> USD)
 fx.total_usd_today = fx.usd + (fx.jpy @ date.today() >> USD)
