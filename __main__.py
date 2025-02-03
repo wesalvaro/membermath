@@ -106,3 +106,8 @@ try:
     assert fn.baz == 1
 except AssertionError as e:
     assert "declared and actual varieties" in str(e)
+
+from rich.console import Console
+
+c = Console()
+c.print(fn.x)
