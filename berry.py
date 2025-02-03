@@ -164,7 +164,11 @@ class Variety(object):
             return self.rate(self._day_based_rates[original.name][str(day)])
         if not day and self._current_rates and original.name in self._current_rates:
             return self.rate(self._current_rates[original.name])
-        raise NotImplementedError(f"No ex implemented ({original} » {self}" + (f"@{day}" if day else "") + ").")
+        raise NotImplementedError(
+            f"No ex implemented ({original} » {self}"
+            + (f"@{day}" if day else "")
+            + ")."
+        )
 
     def __str__(self):
         return self.symbol or self.name
@@ -179,7 +183,9 @@ class Variety(object):
         else:
             day = None
         no_unit = v(src.value)
-        op = f" {src.variety.name}<{src.variety}{dst}" + (f"@{day}" if day else "") + ">"
+        op = (
+            f" {src.variety.name}<{src.variety}{dst}" + (f"@{day}" if day else "") + ">"
+        )
         try:
             return Binerry(
                 no_unit, dst.ex(src.variety, day), op, lambda a, b: a * b, scaling=True
