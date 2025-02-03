@@ -28,6 +28,3 @@ class Unerry(Berry):
     @property
     def value(self):
         return self._fn(self._value)
-
-    def __call__(self, value: Bushel) -> Berry:
-        return Berry.of(self.value(value), variety=self.variety, name=self.name)

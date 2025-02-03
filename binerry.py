@@ -52,6 +52,3 @@ class Binerry(Berry):
     @property
     def value(self) -> Decimal:
         return self.fn(self.a.value, self.b.value)
-
-    def __call__(self, value: Bushel) -> Berry:
-        return Binerry(self.a(value), self.b(value), self.op, self.scaling, self.fn)

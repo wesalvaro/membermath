@@ -14,9 +14,6 @@ class Doppelberry(Berry):
         assert isinstance(value, Berry), "{name}'s real {value} was not a value"
         self._value = value
 
-    def __call__(self, value) -> Berry:
-        return Doppelberry(self._value(value), name=self.name)
-
     @property
     def value(self) -> Decimal:
         return self._value.value

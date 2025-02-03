@@ -38,6 +38,3 @@ class Seed(Berry):
     @property
     def value(self) -> Decimal:
         return self._value
-
-    def __call__(self, value=None) -> Berry:
-        return self
