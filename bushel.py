@@ -46,8 +46,11 @@ class Bushel(object):
     def __delitem__(self, key):
         raise NotImplementedError("Values cannot be changed.")
 
+    def __contains__(self, key):
+        return key in self._values
+
     def __getitem__(self, key):
-        if key not in self._values:
+        if key not in self:
             raise KeyError(f"{key} is not set: {" ".join(sorted(self._values.keys()))}")
         return self._values[key]
 
