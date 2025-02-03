@@ -40,11 +40,11 @@ class Callerry(Berry):
 
     @property
     def formula(self) -> str:
-        return f"{self.name}({[a.formula for a in self.args]})={self}"
+        return f"{self.name}({','.join([a.formula for a in self.args])})={self}"
 
     @property
     def formula_simple(self) -> str:
-        return f"{self.name}({[a.formula_simple for a in self.args]})={self}"
+        return f"{self.name}({','.join([a.formula_simple for a in self.args])})={self}"
 
     @property
     def formulas(self) -> str:
@@ -55,17 +55,22 @@ class Callerry(Berry):
 
     @property
     def value(self):
+        return self().value
+
+    def __call__(self):
         v = Berry.of(self._fn(*self.args))
         retanno = self._sig.return_annotation
         if retanno != inspect.Signature.empty:
             assert (
-                retanno == v.variety
+                v.variety is None or retanno == v.variety
             ), f"`{self.name}` declared and actual varieties don't match: {retanno} & {v.variety}"
         return v
 
     @property
     def variety(self):
-        return _checkVarietyAnnotations(self._sig.return_annotation, self.value.variety)
+        return _checkVarietyAnnotations(
+            self._sig.return_annotation, self().variety
+        )
 
 
 def _checkVarietyAnnotations(a, b=None):
