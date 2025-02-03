@@ -48,6 +48,11 @@ class Berry(object):
 
         return Binerry(self, v(other), "⫽", lambda a, b: a // b, scaling=True)
 
+    def __pow__(self, exp):
+        from .binerry import Binerry
+
+        return Binerry(self, v(exp), "**", lambda a, b: a**b, scaling=True)
+
     def __floor__(self):
         from .unerry import Unerry
 
