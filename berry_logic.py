@@ -25,6 +25,10 @@ def __ge__(self, other):
     return self.value >= v(other).value
 
 
+def __bool__(self):
+    return bool(self.value)
+
+
 def install():
     Berry.__eq__ = __eq__
     Berry.__ne__ = __ne__
@@ -32,3 +36,4 @@ def install():
     Berry.__le__ = __le__
     Berry.__gt__ = __gt__
     Berry.__ge__ = __ge__
+    Berry.__bool__ = __bool__
