@@ -65,6 +65,10 @@ class Bushel(object):
         nice_name = self._prefix + str(name)
         if isinstance(value, tuple):
             self._values[name] = _tupleBerry(value, name=nice_name)
+        elif callable(value):
+            from .callerry import Callerry
+
+            self._values[name] = Callerry(value, self, name=name, prefix=self._prefix)
         else:
             self._values[name] = Berry.of(value, name=nice_name)
 

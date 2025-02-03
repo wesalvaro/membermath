@@ -81,3 +81,28 @@ print(fx.total_usd)
 print(fx.total_usd.variety, fx.total_usd.value)
 print(fx.total_usd_today)
 print(fx.total_usd_today.variety, fx.total_usd_today.value)
+
+
+def cube2(y=2):
+    return y**3
+
+
+def halve(x: Blueberry) -> Strawberry:
+    return x / 2
+
+
+fn = Bushel()
+fn.x = 2, Blueberry
+fn.foo = lambda x: x**2
+assert fn.foo == 4
+fn.bar = cube2
+assert fn.bar == 8
+assert fn.bar.variety == None
+fn.y = 3, USD
+assert fn.bar == 27
+assert fn.bar.variety == USD
+fn.baz = halve
+try:
+    assert fn.baz == 1
+except AssertionError as e:
+    assert "declared and actual varieties" in str(e)
